@@ -2,9 +2,18 @@ const express = require('express'); //npm install --save express //npm install -
 const app = express();
 const morgan = require('morgan'); //npm install --save morgan
 const bodyParser = require('body-parser') //npm install --save body-parser
+const mongoose = require('mongoose'); //npm install --save mongoose
 
-const productRoutes = require('./api/routes/productRoutes')
+//import routes
+const productRoutes = require('./api/routes/productRoutes');
 const orderRoutes = require('./api/routes/orderRoutes');
+
+//MongoDB connection
+mongoose.set('strictQuery', false);
+mongoose.connect('mongodb://127.0.0.1:27017/ExpressJS_Shop_API')
+.then(() => console.log('Connected to DB!'));
+
+
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}));
