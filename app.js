@@ -9,6 +9,7 @@ const productRoutes = require('./api/routes/productRoutes');
 const orderRoutes = require('./api/routes/orderRoutes');
 
 //MongoDB connection
+mongoose.Promise = global.Promise;
 mongoose.set('strictQuery', false);
 mongoose.connect('mongodb://127.0.0.1:27017/ExpressJS_Shop_API')
 .then(() => console.log('Connected to DB!'));
