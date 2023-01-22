@@ -9,7 +9,10 @@ router.get('/', (req, res, next) => {
         .then((doc) => {
             console.log(doc);
             if (doc) {
-                res.status(200).json(doc);
+                res.status(200).json({
+                    message: "Successful",
+                    content: doc
+                });
             }
             else {
                 res.status(404).json({ message: 'No valid entry found' });
@@ -27,14 +30,19 @@ router.post('/', (req, res, next) => {
         name: req.body.name,
         price: req.body.price
     });
-    product.save().then(result => {
+    product
+    .save()
+    .then(result => {
         console.log('result');
         res.status(200).json({
-            message: "POST product",
-            content: product
+            message: "Successfully Created",
+            content: result
         });
     })
-        .catch(err => console.log(err));
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({ error: err });
+    });
 });
 
 router.get('/:productId', (req, res, next) => {
@@ -44,7 +52,10 @@ router.get('/:productId', (req, res, next) => {
         .then((doc) => {
             console.log(doc);
             if (doc) {
-                res.status(200).json(doc);
+                res.status(200).json({
+                    message: "Successful",
+                    content: doc
+                });
             }
             else {
                 res.status(404).json({ message: 'No valid entry found for provided id' });
@@ -63,7 +74,10 @@ router.patch('/:productId', (req, res, next) => {
         .exec()
         .then((result) => {
             //console.log(result);
-            res.status(200).json(result);
+            res.status(200).json({
+                message: "Successfully Updated",
+                content: result
+            });
         })
         .catch(err => {
             //console.log(err);
@@ -106,7 +120,10 @@ router.delete('/:productId', (req, res, next) => {
         .exec()
         .then((doc) => {
             console.log(doc);
-            res.status(200).json(doc);
+            res.status(200).json({
+                message: "Successfully Deleted",
+                content: doc
+            });
         })
         .catch(err => {
             console.log(err);
