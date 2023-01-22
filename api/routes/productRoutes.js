@@ -1,3 +1,4 @@
+const { response } = require('express');
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -5,13 +6,28 @@ const Product = require('../models/product');
 
 router.get('/', (req, res, next) => {
     Product.find()
+        .select('_id name price') // select specific fields
         .exec()
-        .then((doc) => {
-            console.log(doc);
-            if (doc) {
+        .then((docs) => {
+            console.log(docs);
+            if (docs) {
+                const responseContent = {
+                    count:docs.length,
+                    product : docs.map(doc => {
+                        return {
+                            name : doc.name,
+                            price : doc.price,
+                            _id : doc._id,
+                            reference : {
+                                method : "GET",
+                                url : "http://localhost:5000/products/" + doc._id
+                            }
+                        }
+                    })
+                }
                 res.status(200).json({
                     message: "Successful",
-                    content: doc
+                    content: responseContent
                 });
             }
             else {
@@ -30,13 +46,21 @@ router.post('/', (req, res, next) => {
         name: req.body.name,
         price: req.body.price
     });
-    product
+    product 
     .save()
     .then(result => {
         console.log('result');
         res.status(200).json({
             message: "Successfully Created",
-            content: result
+            content: {
+                name : result.name,
+                price:result.price,
+                _id:result._id,
+                reference : {
+                    method : "GET",
+                    url : "http://localhost:5000/products/" + result._id
+                }
+            }
         });
     })
     .catch(err => {
@@ -48,6 +72,7 @@ router.post('/', (req, res, next) => {
 router.get('/:productId', (req, res, next) => {
     const id = req.params.productId;
     Product.findById(id)
+        .select('_id name price') // select specific fields
         .exec()
         .then((doc) => {
             console.log(doc);
@@ -76,7 +101,15 @@ router.patch('/:productId', (req, res, next) => {
             //console.log(result);
             res.status(200).json({
                 message: "Successfully Updated",
-                content: result
+                content: {
+                    name:result.name,
+                    price: result.price,
+                    _id:result._id,
+                    reference : {
+                        method : "GET",
+                        url : "http://localhost:5000/products/" + result._id
+                    }
+                }
             });
         })
         .catch(err => {
