@@ -1,3 +1,4 @@
+const { response } = require('express');
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -5,11 +6,29 @@ const Product = require('../models/product');
 
 router.get('/', (req, res, next) => {
     Product.find()
+        .select('_id name price') // select specific fields
         .exec()
-        .then((doc) => {
-            console.log(doc);
-            if (doc) {
-                res.status(200).json(doc);
+        .then((docs) => {
+            console.log(docs);
+            if (docs) {
+                const responseContent = {
+                    count:docs.length,
+                    product : docs.map(doc => {
+                        return {
+                            name : doc.name,
+                            price : doc.price,
+                            _id : doc._id,
+                            reference : {
+                                method : "GET",
+                                url : "http://localhost:5000/products/" + doc._id
+                            }
+                        }
+                    })
+                }
+                res.status(200).json({
+                    message: "Successful",
+                    content: responseContent
+                });
             }
             else {
                 res.status(404).json({ message: 'No valid entry found' });
@@ -27,24 +46,41 @@ router.post('/', (req, res, next) => {
         name: req.body.name,
         price: req.body.price
     });
-    product.save().then(result => {
+    product 
+    .save()
+    .then(result => {
         console.log('result');
         res.status(200).json({
-            message: "POST product",
-            content: product
+            message: "Successfully Created",
+            content: {
+                name : result.name,
+                price:result.price,
+                _id:result._id,
+                reference : {
+                    method : "GET",
+                    url : "http://localhost:5000/products/" + result._id
+                }
+            }
         });
     })
-        .catch(err => console.log(err));
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({ error: err });
+    });
 });
 
 router.get('/:productId', (req, res, next) => {
     const id = req.params.productId;
     Product.findById(id)
+        .select('_id name price') // select specific fields
         .exec()
         .then((doc) => {
             console.log(doc);
             if (doc) {
-                res.status(200).json(doc);
+                res.status(200).json({
+                    message: "Successful",
+                    content: doc
+                });
             }
             else {
                 res.status(404).json({ message: 'No valid entry found for provided id' });
@@ -63,7 +99,18 @@ router.patch('/:productId', (req, res, next) => {
         .exec()
         .then((result) => {
             //console.log(result);
-            res.status(200).json(result);
+            res.status(200).json({
+                message: "Successfully Updated",
+                content: {
+                    name:result.name,
+                    price: result.price,
+                    _id:result._id,
+                    reference : {
+                        method : "GET",
+                        url : "http://localhost:5000/products/" + result._id
+                    }
+                }
+            });
         })
         .catch(err => {
             //console.log(err);
@@ -106,7 +153,10 @@ router.delete('/:productId', (req, res, next) => {
         .exec()
         .then((doc) => {
             console.log(doc);
-            res.status(200).json(doc);
+            res.status(200).json({
+                message: "Successfully Deleted",
+                content: doc
+            });
         })
         .catch(err => {
             console.log(err);
