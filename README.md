@@ -19,3 +19,5 @@
 # npm install --save multer
  https://www.npmjs.com/package/multer
 
+# npm install bcrypt --save
+https://www.npmjs.com/package/bcrypt
