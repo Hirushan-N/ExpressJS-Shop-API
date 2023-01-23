@@ -1,0 +1,6 @@
+{
+    "env":{
+        "CONNECTION_STRING":"mongodb://127.0.0.1:27017/ExpressJS_Shop_API",
+        "JWT_KEY":"secret"
+    }
+}
