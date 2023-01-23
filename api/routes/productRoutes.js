@@ -13,7 +13,7 @@ router.get('/', (req, res, next) => {
             if (docs) {
                 const responseContent = {
                     count:docs.length,
-                    product : docs.map(doc => {
+                    products : docs.map(doc => {
                         return {
                             name : doc.name,
                             price : doc.price,
@@ -50,7 +50,7 @@ router.post('/', (req, res, next) => {
     .save()
     .then(result => {
         console.log('result');
-        res.status(200).json({
+        res.status(201).json({
             message: "Successfully Created",
             content: {
                 name : result.name,
