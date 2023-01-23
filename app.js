@@ -7,6 +7,7 @@ const mongoose = require('mongoose'); //npm install --save mongoose
 //import routes
 const productRoutes = require('./api/routes/productRoutes');
 const orderRoutes = require('./api/routes/orderRoutes');
+const userRoutes = require('./api/routes/userRoutes')
 
 //MongoDB connection
 mongoose.Promise = global.Promise;
@@ -42,6 +43,7 @@ app.use((req,res,next) => {
 //routes
 app.use('/products',productRoutes);
 app.use('/orders',orderRoutes);
+app.use('/users',userRoutes);
 
 //error handling
 app.use((req,res,next) => {
