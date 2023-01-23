@@ -3,9 +3,9 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Order = require('../models/Order');
 const Product = require('../models/product');
+const checkAuth = require('../middleware/check-auth');
 
-
-router.get('/', (req, res, next) => {
+router.get('/',checkAuth, (req, res, next) => {
     Order.find()
         .select('_id product quantity') // select specific fields
         .populate('product','_id name price') // returns nexted JSON wich contains the Product data
@@ -42,7 +42,7 @@ router.get('/', (req, res, next) => {
         });
 });
 
-router.post('/', (req, res, next) => {
+router.post('/',checkAuth, (req, res, next) => {
     const id = req.body.product;
     Product.findById(id)
         .then((doc) => {
@@ -80,7 +80,7 @@ router.post('/', (req, res, next) => {
         });
 });
 
-router.get('/:orderId', (req, res, next) => {
+router.get('/:orderId',checkAuth, (req, res, next) => {
     const id = req.params.orderId;
     Order.findById(id)
         .select('_id product quantity') // select specific fields
@@ -104,7 +104,7 @@ router.get('/:orderId', (req, res, next) => {
         });
 });
 
-router.patch('/:orderId', (req, res, next) => {
+router.patch('/:orderId',checkAuth, (req, res, next) => {
     const id = req.params.orderId;
     //#region New after 2021
     Order.findByIdAndUpdate(id, { $set: req.body }, { new: true })
@@ -131,7 +131,7 @@ router.patch('/:orderId', (req, res, next) => {
     //#endregion
 });
 
-router.delete('/:orderId', (req, res, next) => {
+router.delete('/:orderId',checkAuth, (req, res, next) => {
     const id = req.params.orderId;
     Order.findByIdAndRemove(id) // can use Order.remove({ _id: id }) instead(cannot return the deleted object.only returns a report)
         .exec()
