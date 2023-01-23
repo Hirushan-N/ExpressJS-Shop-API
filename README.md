@@ -15,3 +15,7 @@
 
 # npm install --save mongoose
  https://www.npmjs.com/package/mongoose
+
+# npm install --save multer
+ https://www.npmjs.com/package/multer
+
